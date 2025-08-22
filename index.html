@@ -87,7 +87,7 @@
         }
 
         .cell.winner {
-            background: #d4edda;
+            background: #bbe4c5;
             border-color: #28a745;
             color: #155724;
             animation: pulse 1s infinite;
@@ -249,6 +249,17 @@
                 <div class="score-value" id="oScore">0</div>
             </div>
         </div>
+
+        <div class="score" id="comboBoard">
+            <div class="score-item x-score">
+                <div class="score-label">Combos X (Atual / Recorde)</div>
+                <div class="score-value"><span id="xComboCurrent">0</span> / <span id="xComboBest">0</span></div>
+            </div>
+            <div class="score-item o-score">
+                <div class="score-label">Combos O (Atual / Recorde)</div>
+                <div class="score-value"><span id="oComboCurrent">0</span> / <span id="oComboBest">0</span></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -260,6 +271,10 @@
                 this.scores = { X: 0, O: 0, draw: 0 };
                 this.gameMode = 'twoPlayer'; // 'twoPlayer' ou 'computer'
                 this.difficulty = 'medium'; // 'easy', 'medium', 'hard'
+                this.combos = {
+                    X: { current: 0, best: 0 },
+                    O: { current: 0, best: 0 }
+                };
                 
                 this.initializeGame();
             }
@@ -270,6 +285,7 @@
                 this.gameActive = true;
                 this.updateStatus();
                 this.updateBoard();
+                this.updateComboUI();
             }
 
             setGameMode(mode) {
@@ -291,6 +307,8 @@
                         this.scores[this.currentPlayer]++;
                         this.updateScores();
                         this.updateStatus(`Jogador ${this.currentPlayer} venceu! 🎉`);
+                        this.updateCombosOnWin(this.currentPlayer);
+                        this.updateComboUI();
                         this.highlightWinner();
                         return;
                     }
@@ -300,6 +318,8 @@
                         this.scores.draw++;
                         this.updateScores();
                         this.updateStatus('Empate! 🤝');
+                        this.updateCombosOnDraw();
+                        this.updateComboUI();
                         return;
                     }
                     
@@ -381,6 +401,29 @@
                 document.getElementById('xScore').textContent = this.scores.X;
                 document.getElementById('oScore').textContent = this.scores.O;
                 document.getElementById('drawScore').textContent = this.scores.draw;
+            }
+
+            updateCombosOnWin(winner) {
+                const loser = winner === 'X' ? 'O' : 'X';
+                this.combos[winner].current += 1;
+                if (this.combos[winner].current > this.combos[winner].best) {
+                    this.combos[winner].best = this.combos[winner].current;
+                }
+                // Perdeu a sequência do adversário
+                this.combos[loser].current = 0;
+            }
+
+            updateCombosOnDraw() {
+                // Empate zera as sequências atuais dos dois
+                this.combos.X.current = 0;
+                this.combos.O.current = 0;
+            }
+
+            updateComboUI() {
+                document.getElementById('xComboCurrent').textContent = this.combos.X.current;
+                document.getElementById('xComboBest').textContent = this.combos.X.best;
+                document.getElementById('oComboCurrent').textContent = this.combos.O.current;
+                document.getElementById('oComboBest').textContent = this.combos.O.best;
             }
 
             resetGame() {
