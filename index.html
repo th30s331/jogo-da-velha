@@ -275,6 +275,18 @@
                     X: { current: 0, best: 0 },
                     O: { current: 0, best: 0 }
                 };
+                this.quotes = [
+                    { text: 'Para toda ação há uma reação de igual intensidade.', author: 'Albert Einstein' },
+                    { text: 'A vida só pode ser compreendida, olhando-se para trás; mas só pode ser vivida, olhando-se para frente.', author: 'Søren Kierkegaard' },
+                    { text: 'Penso, logo existo.', author: 'René Descartes' },
+                    { text: 'Conhece-te a ti mesmo.', author: 'Sócrates' },
+                    { text: 'A felicidade não é algo pronto. Ela vem de suas próprias ações.', author: 'Dalai Lama' },
+                    { text: 'Somos o que fazemos repetidamente. A excelência, portanto, não é um ato, mas um hábito.', author: 'Aristóteles' },
+                    { text: 'A imaginação é mais importante que o conhecimento.', author: 'Albert Einstein' },
+                    { text: 'O que não me mata, me fortalece.', author: 'Friedrich Nietzsche' },
+                    { text: 'O homem é a medida de todas as coisas.', author: 'Protágoras' },
+                    { text: 'Nada do que foi será de novo do jeito que já foi um dia.', author: 'Heráclito' }
+                ];
                 
                 this.initializeGame();
             }
@@ -317,7 +329,7 @@
                         this.gameActive = false;
                         this.scores.draw++;
                         this.updateScores();
-                        this.updateStatus('Empate! 🤝');
+                        this.updateStatus(this.getRandomQuote());
                         this.updateCombosOnDraw();
                         this.updateComboUI();
                         return;
@@ -424,6 +436,11 @@
                 document.getElementById('xComboBest').textContent = this.combos.X.best;
                 document.getElementById('oComboCurrent').textContent = this.combos.O.current;
                 document.getElementById('oComboBest').textContent = this.combos.O.best;
+            }
+
+            getRandomQuote() {
+                const q = this.quotes[Math.floor(Math.random() * this.quotes.length)];
+                return `${q.text} — ${q.author}`;
             }
 
             resetGame() {
