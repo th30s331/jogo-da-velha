@@ -2,8 +2,11 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Jogo da Velha</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,7 +15,7 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Mali', 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -200,20 +203,29 @@
             cursor: pointer;
         }
 
-        /* Layout otimizado para tablets em modo retrato */
-        @media screen and (orientation: portrait) and (min-width: 600px) and (max-width: 1024px) {
+        /* Layout otimizado para tablets (modo retrato ou paisagem nessa faixa) */
+        @media screen and (min-width: 600px) and (max-width: 1200px) {
             body {
                 align-items: stretch;
             }
 
             .container {
-                width: 100vw;
+                width: 100%;
                 height: 100vh;
                 border-radius: 0;
                 padding: 3rem 2rem;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
+                display: grid;
+                grid-template-columns: 1.2fr 1fr; /* tabuleiro à esquerda (maior), placar à direita */
+                column-gap: 2rem;
+                align-items: start;
+            }
+
+            /* Cabeçalho e controles ocupam a largura toda */
+            h1,
+            .game-modes,
+            .difficulty,
+            .status {
+                grid-column: 1 / -1;
             }
 
             h1 {
@@ -225,11 +237,15 @@
                 margin-bottom: 2rem;
             }
 
+            /* Tabuleiro à esquerda */
             .board {
-                width: min(90vmin, 90vw);
+                grid-column: 1;
+                justify-self: stretch;
+                margin: 0;
+                width: 100%;
                 max-width: none;
                 gap: 14px;
-                margin-bottom: 2rem;
+                margin-bottom: 0;
             }
 
             .cell {
@@ -245,13 +261,45 @@
             }
 
             .reset-btn {
+                grid-column: 2;
+                justify-self: start;
                 padding: 16px 28px;
                 font-size: 1.2rem;
+                margin-top: 0;
             }
 
+            /* Placar à direita (empilhado) */
+            .score { grid-column: 2; }
+            #comboBoard { grid-column: 2; }
+
             .score {
-                margin-top: 2rem;
+                margin-top: 0;
                 gap: 1rem;
+            }
+
+            #comboBoard {
+                margin-top: 1rem;
+            }
+        }
+
+        /* Ajustes específicos para iOS Safari: usar dvh quando suportado */
+        @supports (height: 100dvh) {
+            @media screen and (orientation: portrait) and (min-width: 600px) {
+                .container {
+                    height: 100dvh;
+                }
+                body {
+                    min-height: 100dvh;
+                }
+            }
+        }
+
+        /* Fallback para iOS mais antigo: preencher área disponível */
+        @supports (-webkit-touch-callout: none) {
+            @media screen and (orientation: portrait) and (min-width: 600px) {
+                .container {
+                    min-height: -webkit-fill-available;
+                }
             }
         }
     </style>
